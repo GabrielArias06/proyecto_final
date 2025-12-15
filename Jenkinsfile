@@ -20,15 +20,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "Construyendo imagen con docker-compose"
-                sh 'docker compose build full'
+                bat 'docker compose build full'
             }
         }
 
         stage('Tag Image') {
             steps {
                 echo "Etiquetando imagen"
-                sh """
-                  docker tag alma8-full:1.0 ${DOCKERHUB_REPO}:${IMAGE_TAG}
+                bat """
+                  docker tag alma8-full:1.0 %DOCKERHUB_REPO%:%IMAGE_TAG%
                 """
             }
         }
@@ -37,13 +37,13 @@ pipeline {
             steps {
                 echo "Subiendo imagen a Docker Hub"
                 withCredentials([usernamePassword(
-                    credentialsId: 'proyecto final',
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh """
-                      echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
-                      docker push ${DOCKERHUB_REPO}:${IMAGE_TAG}
+                    bat """
+                      echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                      docker push %DOCKERHUB_REPO%:%IMAGE_TAG%
                     """
                 }
             }
