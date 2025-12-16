@@ -10,21 +10,21 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Clonar repositorio') {
             steps {
                 echo "Clonando repositorio"
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Construir imagen') {
             steps {
                 echo "Construyendo imagen con docker-compose"
                 bat 'docker compose build full'
             }
         }
 
-        stage('Tag Image') {
+        stage('Etiquetar imagen') {
             steps {
                 echo "Etiquetando imagen"
                 bat """
@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-        stage('Push Image') {
+        stage('Darle push a la imagen') {
             steps {
                 echo "Subiendo imagen a Docker Hub"
                 withCredentials([usernamePassword(
